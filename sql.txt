@@ -1,0 +1,26 @@
+CREATE DATABASE tienda;
+USE tienda;
+
+CREATE TABLE IF NOT EXISTS productos (
+    idproducto INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    descripcion TEXT NOT NULL,
+    tipo VARCHAR(50) NOT NULL,
+    precio DECIMAL(10, 2) NOT NULL,
+    imagen VARCHAR(255)
+);
+
+CREATE TABLE IF NOT EXISTS empleados (
+    idempleado INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    apaterno VARCHAR(100) NOT NULL,
+    amaterno VARCHAR(100) NOT NULL,
+    direccion VARCHAR(100) NOT NULL,
+    telefono VARCHAR(10),
+    ciudad VARCHAR(10),
+    estado VARCHAR(10),
+    usuario VARCHAR(100) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    rol VARCHAR(50) NOT NULL,
+    CONSTRAINT unique_nombre_completo UNIQUE (nombre, apaterno, amaterno)
+);
