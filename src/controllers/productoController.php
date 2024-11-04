@@ -11,6 +11,7 @@
 
     public function crearProducto($data) {
       $producto = new Producto();
+      $producto->idproducto = $data['idproducto'];
       $producto->nombre = $data['nombre'];
       $producto->descripcion = $data['descripcion'];
       $producto->tipo = $data['tipo'];
@@ -21,6 +22,7 @@
 
     public function actualizarProducto($data) {
       $producto = new Producto();
+      $producto->idproducto = $data['idproducto'];
       $producto->nombre = $data['nombre'];
       $producto->descripcion = $data['descripcion'];
       $producto->tipo = $data['tipo'];
@@ -39,6 +41,10 @@
 
     public function obtenerProductosPorNombre($nombre) {
       return $this->productoRepository->obtenerProductosPorNombre($nombre);
+    }
+
+    public function obtenerProductosPorId($id) {
+      return $this->productoRepository->obtenerProductosPorId($id['id']);
     }
   }
 ?>

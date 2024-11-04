@@ -67,5 +67,13 @@
       $resultado->execute();
       return $resultado->fetch(PDO::FETCH_ASSOC);
     }
+
+    public function obtenerProductosPorId($idproducto) {
+      $sql = "SELECT * FROM productos WHERE idproducto = :idproducto";
+      $resultado = $this->conn->prepare($sql);
+      $resultado->bindParam(':idproducto', $idproducto);
+      $resultado->execute();
+      return $resultado->fetch(PDO::FETCH_ASSOC);
+    }
   }
 ?>

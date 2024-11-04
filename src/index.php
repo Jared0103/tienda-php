@@ -22,7 +22,7 @@
     return json_encode($productoController->crearProducto($data));
   });
 
-  $router->put('/productos/{id}', function() use ($productoController) {
+  $router->put('/productos', function() use ($productoController) {
     $data = json_decode(file_get_contents("php://input"), true);
     return json_encode($productoController->actualizarProducto($data));
   });
@@ -34,6 +34,11 @@
 
   $router->get('/productos', function() use ($productoController) {
     return json_encode($productoController->obtenerProductos());
+  });
+
+  $router->post('/productos/detalle', function() use ($productoController) {
+    $id = json_decode(file_get_contents("php://input"), true);
+    return json_encode($productoController->obtenerProductosPorId($id));
   });
 
   $router->dispatch();

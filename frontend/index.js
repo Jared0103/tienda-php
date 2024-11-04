@@ -1,4 +1,4 @@
-const apiUrl = 'http://localhost/tienda-php/src/index.php'
+const apiUrl = 'http://localhost:8888/tienda-php/src/index.php'
 const productForm = document.getElementById('productForm')
 const alertContainer = document.getElementById('alertContainer')
 const productTableBody = document.getElementById('productTableBody')
@@ -18,7 +18,35 @@ const borrarProducto = async (id) => {
       body: JSON.stringify(send)
     })
     const borrado = await res.json()
+    if (borrado && borrado.mensaje && borrado.mensaje === 'Producto Borrado') {
+      loadProductos()
+      showAlert('Producto Borrado', 'success')
+    }
     console.log('@@@ res => ', borrado)
+  } catch (error) {
+    console.error('Error: ', error)
+  }
+}
+
+const getProducto = async (id) => {
+  try {
+    const send = {
+      id: id
+    }
+    const res = await fetch(apiUrl + '/productos/detalle', {
+      method: 'POST',
+      body: JSON.stringify(send)
+    })
+    const producto = await res.json()
+    if (producto) {
+      document.getElementById('productId').value = producto.idproducto
+        document.getElementById('nombre').value = producto.nombre,
+        document.getElementById('descripcion').value = producto.descripcion,
+        document.getElementById('tipo').value = producto.tipo,
+        document.getElementById('precio').value = producto.precio,
+        document.getElementById('imagen').value = producto.imagen
+    }
+    console.log("🚀 ~ getProducto ~ producto:", producto)
   } catch (error) {
     console.error('Error: ', error)
   }
@@ -37,7 +65,7 @@ const loadProductos = async () => {
     productos.forEach((item) => {
       const row = document.createElement('tr')
       row.innerHTML =
-      `
+        `
         <td>${item.idproducto}</td>
         <td>${item.nombre}</td>
         <td>${item.descripcion}</td>
@@ -59,21 +87,36 @@ productTableBody.addEventListener('click', (e) => {
   if (e.target.classList.contains('btn-danger')) {
     borrarProducto(e.target.getAttribute('data_id'))
   }
+  if (e.target.classList.contains('btn-warning')) {
+    getProducto(e.target.getAttribute('data_id'))
+  }
 })
 
 const crearProducto = async () => {
   const productId = document.getElementById('productId').value
-  const producto = {
-    nombre: document.getElementById('nombre').value,
-    descripcion: document.getElementById('descripcion').value,
-    tipo: document.getElementById('tipo').value,
-    precio: document.getElementById('precio').value,
-    imagen: document.getElementById('imagen').value
+  let producto
+  if (productId) {
+    producto = {
+      idproducto: productId,
+      nombre: document.getElementById('nombre').value,
+      descripcion: document.getElementById('descripcion').value,
+      tipo: document.getElementById('tipo').value,
+      precio: document.getElementById('precio').value,
+      imagen: document.getElementById('imagen').value
+    }
+  } else {
+    producto = {
+      nombre: document.getElementById('nombre').value,
+      descripcion: document.getElementById('descripcion').value,
+      tipo: document.getElementById('tipo').value,
+      precio: document.getElementById('precio').value,
+      imagen: document.getElementById('imagen').value
+    }
   }
-  const url = productId ? `${apiUrl}/productos/id=${productId}` : `${apiUrl}/productos`
+  const url = `${apiUrl}/productos`
   const method = productId ? 'PUT' : 'POST'
 
-  console.log('@@@ ruta y metodo => ', url, method)
+  console.log('@@@ ruta y metodo => ', url, method, producto)
   const resultado = await fetch(url, {
     method: method,
     body: JSON.stringify(producto)
@@ -84,7 +127,12 @@ const crearProducto = async () => {
     showAlert('Producto Agregado', 'success')
     loadProductos()
     productForm.reset()
-  } else {
+  } else if (response.mensaje === 'Producto Actualizado') {
+    showAlert('Producto Actualizado', 'success')
+    loadProductos()
+    productForm.reset()
+  }
+  else {
     showAlert('Error al agregar el producto', 'danger')
   }
   document.getElementById('productId').value = ''
@@ -103,8 +151,8 @@ btnSubmit.addEventListener('submit', (event) => {
 })
 
 const showAlert = (mensaje, tipo) => {
-  alertContainer.innerHTML = 
-  `
+  alertContainer.innerHTML =
+    `
     <div class="alert alert-${tipo} alert-dismissable fade show" role="alert">
       ${mensaje}
       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
