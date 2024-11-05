@@ -71,6 +71,7 @@ const loadProductos = async () => {
         <td>${item.descripcion}</td>
         <td>${item.tipo}</td>
         <td>${item.precio}</td>
+        <td><img src="${item.imagen}" alt="Imagen de ${item.nombre}" class="product-image"></td>
         <td>
           <button class="btn btn-warning btn-sm" data_id="${item.idproducto}">Editar</button>
           <button class="btn btn-danger btn-sm" data_id="${item.idproducto}">Borrar</button>
